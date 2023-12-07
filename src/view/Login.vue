@@ -19,7 +19,7 @@
 
 <script>
 export default {
-    name: 'LoginComponent',
+    name: 'LoginView',
     data() {
         return {
             username: '',
