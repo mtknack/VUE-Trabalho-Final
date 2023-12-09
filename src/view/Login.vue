@@ -33,6 +33,8 @@ export default {
         },
         convidado(){
             console.log('Login clicked. Username:', this.username, 'Password:', this.password);
+            localStorage.setItem('user','convidado');
+            this.$router.push('/home');
         }
         
     }
