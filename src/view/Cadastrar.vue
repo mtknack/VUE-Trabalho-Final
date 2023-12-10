@@ -1,19 +1,19 @@
 <template>
     <div class="login-container">
-        <h2>Login</h2>
+        <h2>Cadastro</h2>
         <form @enviar.prevent="login">
-        <label for="username">UserLogin:</label>
+        <label for="username">User Name:</label>
         <input type="text" id="username" v-model="username" required>
+
+        <label for="userlogin">User Login:</label>
+        <input type="text" id="userlogin" v-model="userlogin" required>
 
         <label for="password">Password:</label>
         <input type="password" id="password" v-model="password" required>
 
-        <button type="enviar" @click="login">Login</button>
+        <button @click="cadastrar">Cadastrar</button>
 
         </form>
-        <div class="menu-item" @click="navigateTo('cadastro')">
-            <span>Cadastrar</span>
-        </div>
         <div class="menu-item" @click="navigateTo('home')">
             <span>Entrar como convidado</span>
         </div>
@@ -22,22 +22,20 @@
 
 <script>
 export default {
-    name: 'LoginView',
+    name: 'CadastroView',
     data() {
         return {
-            userlogin: '',
-            password: ''
+            username: '',
+            password: '',
+            userlogin: ''
         };
     },
     methods: {
-        login() {
-            console.log('Login clicked. Username:', this.userlogin, 'Password:', this.password);
-            if(this.username && this.password){
-                this.navigateTo('home')
+        cadastrar() {
+            console.log('Username:', this.username, 'UserLOGIN:', this.userlogin, 'Password:', this.password);
+            if(this.username && this.userlogin && this.password){
+                this.navigateTo('login')
             }
-        },
-        convidado(){
-            console.log('Login clicked. Username:', this.userlogin, 'Password:', this.password);
         },
         navigateTo(route) {
             this.$router.push({ name: route });
@@ -54,8 +52,8 @@ export default {
     border: 1px solid #ccc;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-top: 20vh;
-    margin-left: 80vh;
+    margin-top: 10vh;
+    margin-left: 75vh;
 }
 
 form {
@@ -87,7 +85,7 @@ background-color: #2980b9;
 }
 
 .menu-item {
-    margin-top: 10px;
+margin-top: 20px;
   margin-bottom: 10px;
   cursor: pointer;
 }

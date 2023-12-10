@@ -5,6 +5,7 @@ import Login from './view/Login.vue';
 import Home from './view/Home.vue';
 import NewPost from './view/NewPost.vue';
 import Post from './view/Post.vue';
+import Cadastrar from './view/Cadastrar.vue';
 
 Vue.use(Router)
 
@@ -15,6 +16,11 @@ export default new Router({
         path: '/',
         component: Login,
         name: 'login'
+      },
+      {
+        path: '/cadastro',
+        component: Cadastrar,
+        name: 'cadastro',
       },
       {
         path: '/home',
@@ -31,6 +37,6 @@ export default new Router({
         component: Post,
         name: 'post',
         props: true
-      }
+      },
     ]
 })
