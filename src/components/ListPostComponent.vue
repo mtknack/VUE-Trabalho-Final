@@ -1,35 +1,45 @@
 <template>
   <div class="listPost">
+    <div class="message-header">
+      <p>Mensagens: {{ messageDataList.length }}</p>
+    </div>
     <PostComponent
       v-for="messageData in messageDataList"
       :key="messageData.messageId"
       :messageData="messageData"
-      @like-clicked="handleLikeClicked"
     />
   </div>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapGetters } from 'vuex';
 import PostComponent from './PostComponent.vue';
 
 export default {
   computed: {
-    ...mapState('posts', ['messageDataList']),
+    ...mapGetters({
+      messageDataList: 'getMessages'
+    })
   },
   components: {
     PostComponent,
   },
-  created() {
-    // Call the action to fetch data from the store
-    this.fetchMessageData();
-  },
-  methods: {
-    ...mapActions('posts', ['fetchMessageData']),
-    handleLikeClicked(messageId) {
-      // Logic to handle the "like" button click
-      console.log(`Like clicked for message with ID: ${messageId}`);
-    },
-  },
 };
 </script>
+
+<style scoped>
+
+.listPost{
+  padding: 10px 40px;
+} 
+
+.message-header {
+  display: flex;
+  justify-content: end;
+  margin-bottom: 10px;
+}
+
+.message-header p {
+  color: #333;
+}
+</style>

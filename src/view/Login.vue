@@ -11,8 +11,8 @@
         <button type="enviar">Login</button>
 
         </form>
-        <div>
-            <a @click="convidado">entrar como convidado</a>
+        <div class="menu-item" @click="navigateTo('home')">
+            <span>Entrar como convidado</span>
         </div>
     </div>
 </template>
@@ -33,22 +33,24 @@ export default {
         },
         convidado(){
             console.log('Login clicked. Username:', this.username, 'Password:', this.password);
-            localStorage.setItem('user','convidado');
-            this.$router.push('/home');
-        }
-        
+        },
+        navigateTo(route) {
+            this.$router.push({ name: route });
+        },
     }
 };
 </script>
 
 <style scoped>
 .login-container {
-max-width: 300px;
-margin: 0 auto;
-padding: 20px;
-border: 1px solid #ccc;
-border-radius: 8px;
-box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    max-width: 500px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20vh;
+    margin-left: 80vh;
 }
 
 form {
@@ -62,6 +64,7 @@ margin-bottom: 8px;
 
 input {
 padding: 8px;
+width: 250px;
 margin-bottom: 16px;
 }
 
@@ -78,7 +81,25 @@ button:hover {
 background-color: #2980b9;
 }
 
-a{
-    cursor: pointer;
+.menu-item {
+margin-top: 20px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.menu-item span {
+  text-decoration: none;
+  color: #333;
+  font-size: 16px;
+  padding: 8px;
+  border-radius: 3px;
+  display: block;
+  transition: background-color 0.3s;
+  text-align: center;
+}
+
+.menu-item:hover span {
+  background-color: #3498db;
+  color: #fff;
 }
 </style>

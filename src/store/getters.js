@@ -1,0 +1,1 @@
+export const getMessages2 = state => state.post.getMessages
