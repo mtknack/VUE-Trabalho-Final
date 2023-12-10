@@ -1,7 +1,4 @@
 import { initializeApp } from 'firebase/app';
-import 'firebase/auth'; // Add any other Firebase services you need
-
-Vue.config.productionTip = false;
 
 const firebaseConfig = {
     apiKey: "AIzaSyD7ZbX3dyTeB-JEaM8wBcZo5lMFiR_zqGY",
@@ -14,4 +11,4 @@ const firebaseConfig = {
   
 
 // Initialize Firebase
-initializeApp(firebaseConfig);
+export const firebaseApp = initializeApp(firebaseConfig);

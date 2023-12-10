@@ -15,7 +15,7 @@
 
 <script>
 export default {
-    name: 'NewPost',
+  name: 'NewPost',
   data() {
     return {
       title: '',

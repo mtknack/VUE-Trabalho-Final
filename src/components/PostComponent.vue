@@ -1,20 +1,20 @@
 <template>
   <div class="message-container">
     <div class="message-info">
-      <p>{{ formatDateTime(messageData.formattedDateTime) }}</p>
+      <p>{{ formatDateTime('2023-01-01') }}</p>
     </div>
     <div class="message-content">
       <h3>{{ messageData.title }}</h3>
       <p>{{ messageData.message }}</p>
     </div>
-    <div class="message-interactions">
+    <!-- <div class="message-interactions">
       <button @click="toggleLike" class="like-button">
         {{ messageData.isLiked ? 'Unlikes' : 'Likes' }} {{ messageData.likeCount }}
       </button>
       <button @click="navigateTo(`/post/${messageData.id}`);" class="comment-button">
         Comments {{ contadorDeComentarios(messageData.comments) }}
       </button>
-    </div>
+    </div> -->
   </div>
 </template>
 
