@@ -1,63 +1,91 @@
 <template>
-  <div class="post-detail-container">
-    <h2>{{ mensagem.title }}</h2>
-    <!-- <div class="post-info">
-      <p>{{ mensagem.formattedDateTime }} - {{ mensagem.messageId }}</p>
+  <div v-if="mensagem.length > 0" class="post-detail-container">
+    <h2>{{ mensagem[0].title }}</h2>
+    <div class="post-info">
+      <p>{{ formatDateTime(mensagem[0].formattedDateTime) }}</p>
     </div>
     <div class="post-content">
-      <p>{{ mensagem.message }}</p>
+      <p>{{ mensagem[0].message }}</p>
     </div>
     <div class="post-interactions">
       <button @click="toggleLike" class="like-button">
-        {{ mensagem.isLiked ? 'Unlike' : 'Like' }} {{ mensagem.likeCount }}
+        {{ mensagem[0].isLiked ? 'Unlike' : 'Like' }} {{ mensagem[0].likeCount }}
       </button>
-      <span class="comment-count">{{ mensagem.comments.length }} Comments</span>
+      <span class="comment-count">{{ mensagem[0].comments.length }} Comments</span>
     </div>
     
     <div class="comments-section">
       <h3>Comments</h3>
-      <ul>
-        <li v-for="comment in mensagem.comments" :key="comment.id">
-          <strong>{{ comment.name }}</strong>: {{ comment.comment }}
-          <span class="like-count">Likes: {{ comment.likeCount }}</span>
+      <ul class="comments-list">
+        <li v-for="comment in mensagem[0].comments" :key="comment.id" class="comment-item">
+          <div class="comment-header">
+            <strong>{{ comment.name }}</strong> - {{ comment.formattedDateTime }}
+          </div>
+          <div class="comment-content">
+            {{ comment.comment }}
+          </div>
+          <div class="comment-actions">
+            <button @click="toggleCommentLike(comment)" class="like-button">
+              {{ comment.isLiked ? 'Unlike' : 'Like' }} {{ comment.likeCount }}
+            </button>
+          </div>
         </li>
       </ul>
-    </div> -->
+      <div class="add-comment-section">
+        <h3>Add a Comment</h3>
+        <textarea v-model="newCommentText" placeholder="Type your comment here"></textarea>
+        <button @click="addComment" class="comment-button">Comment</button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapActions } from 'vuex';
 
 export default {
-   name: 'PostView',
+  name: 'PostView',
   props: ['id'],
   data() {
     return {
       mensagem: {},
+      newCommentText: '',
     };
   },
   computed: {
-    ...mapGetters({
-      getMessagesFilter: 'getMessagesFilter',
-    }),
+    ...mapActions('post', ['getMessagesFilter', 'addCommentToMessage', 'toggleLikeMessage', 'toggleLikeComment']),
   },
-  created() {
-    // Chame o getter passando o ID da mensagem
-    const filteredMessages = this.getMessagesFilter(this.$route.params.id);
-
-    // Verifique se a mensagem foi encontrada
-    if (filteredMessages.length > 0) {
-      this.mensagem = filteredMessages[0];
-    } else {
-      // Lidere com o caso em que a mensagem não foi encontrada
-      console.error('Mensagem não encontrada');
+  async mounted() {
+    try {
+      this.mensagem = await this.$store.dispatch('getMessagesFilter', this.$route.params.id);
+    } catch (error) {
+      console.error('Erro ao obter mensagem:', error);
     }
   },
   methods: {
+    formatDateTime(dateTime) {
+      const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+      const formattedDate = new Date(dateTime).toLocaleString('en-US', options);
+      return formattedDate;
+    },
     toggleLike() {
-      // Emitir um evento para informar que o botão "like" foi clicado
-      this.$emit('like-clicked', this.mensagem.messageId);
+      this.$store.dispatch('toggleLikeMessage', this.mensagem[0].id);
+    },
+    toggleCommentLike(comment) {
+      this.$store.dispatch('toggleLikeComment', {
+        messageId: this.mensagem[0].messageId,
+        commentId: comment.id,
+      });
+    },
+    addComment() {
+      if (this.newCommentText.trim() !== '') {
+        this.$store.dispatch('addCommentToMessage', {
+          messageId: this.mensagem[0].messageId,
+          commentText: this.newCommentText,
+        });
+        // Limpar o texto do novo comentário
+        this.newCommentText = '';
+      }
     },
   },
 };
@@ -65,9 +93,7 @@ export default {
 
 <style scoped>
 .post-detail-container {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin: 10px 0;
+  margin-bottom: 20px;
 }
 
 .post-info {
@@ -108,24 +134,52 @@ export default {
   margin-top: 20px;
 }
 
-.comments-section h3 {
-  font-size: 16px;
-  margin-bottom: 10px;
-}
-
-.comments-section ul {
+.comments-list {
   list-style: none;
   padding: 0;
 }
 
-.comments-section li {
-  margin-bottom: 8px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #ccc;
+.comment-item {
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+  padding: 10px;
 }
 
-.like-count {
-  margin-left: 10px;
-  color: #888;
+.comment-header {
+  font-weight: bold;
+}
+
+.comment-content {
+  margin-top: 5px;
+}
+
+.comment-actions {
+  margin-top: 10px;
+}
+
+.add-comment-section {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.add-comment-section textarea {
+  width: 98%;
+  padding: 8px;
+  margin-bottom: 10px;
+  resize: vertical;
+}
+
+.add-comment-section .comment-button {
+  background-color: #27ae60;
+  color: #fff;
+  width: 100px;
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.add-comment-section .comment-button:hover {
+  background-color: #219d52;
 }
 </style>

@@ -44,8 +44,6 @@ export default {
 }
 
 .content {
-  overflow-y: scroll; /* Permite que o conteúdo role verticalmente se necessário */
-  height: 100vh;
   width: 100%;
 }
 </style>

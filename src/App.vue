@@ -3,7 +3,9 @@
      <div v-if="!isLoginRoute" class="vertical-menu">
       <MenuComponentVue />
     </div>
-    <router-view></router-view>
+    <div class="scroll">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
@@ -30,5 +32,12 @@ export default {
 }
 .vertical-menu{
   height: 100vh;
+}
+
+.scroll{
+  overflow-y: scroll;
+  width: 100%;
+  height: 100vh;
+  padding: 10px 40px;
 }
 </style>

@@ -29,9 +29,6 @@ export default {
 
 <style scoped>
 
-.listPost{
-  padding: 10px 40px;
-} 
 
 .message-header {
   display: flex;

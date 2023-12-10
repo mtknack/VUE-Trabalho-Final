@@ -1,6 +1,7 @@
 export default {
     state: {
       messageDataList: [],
+      message: {}
     },
     mutations: {
       setMessages(state, messages) {
@@ -15,13 +16,15 @@ export default {
           context.commit('setMessages', messages);
         }, 1000);
       },
+      getMessagesFilter({state}, id){
+
+        console.log(id, state)
+        return state.messageDataList.filter(mensagem => mensagem.id == id); 
+      }
     },
     getters: {
       getMessages(state){
         return state.messageDataList
-      },
-      getMessagesFilter: (state) => (id) => {
-        return state.messageDataList.filter(mensagem => mensagem.id === id);
       }
     } 
   };
