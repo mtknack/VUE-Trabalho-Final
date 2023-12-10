@@ -16,12 +16,17 @@
 </template>
 
 <script>
+import { signOut } from 'firebase/auth'
+
 export default {
   name: 'MenuComponent',
   methods: {
     navigateTo(route) {
       // Use Vue Router to navigate to the specified route
       this.$router.push({ name: route });
+    },
+    logout() {
+      signOut()
     },
     usuarioLogado(){
       // fazer a teoria de puxar do local storage se o usuario está logado

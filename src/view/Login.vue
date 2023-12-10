@@ -3,10 +3,10 @@
         <h2>Login</h2>
         <form @enviar.prevent="login">
             <label for="username">Username:</label>
-            <input type="text" id="username" v-model="username" required>
+            <input type="text" id="username" v-model="userlogin" required>
             <label for="password">Password:</label>
             <input type="password" id="password" v-model="password" required>
-            <button @click="login()">Login</button>
+            <button @click="event => login(event)">Login</button>
         </form>
         <div class="menu-item" @click="navigateTo('cadastro')">
             <span>Cadastrar</span>
@@ -18,6 +18,9 @@
 </template>
 
 <script>
+import { firebaseApp } from '../config/firebase'
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+
 export default {
     name: 'LoginView',
     data() {
@@ -27,11 +30,23 @@ export default {
         };
     },
     methods: {
-        login() {
-            console.log('Login clicked. Username:', this.userlogin, 'Password:', this.password);
-            if(this.username && this.password){
-                this.navigateTo('home')
-            }
+        login(e) {
+            e.preventDefault()
+            const auth = getAuth(firebaseApp);
+            signInWithEmailAndPassword(auth, this.userlogin, this.password)
+                .then(userCredential => {
+                    // Signed in 
+                    console.log(userCredential)
+                    console.log('Login clicked. Username:', this.userlogin, 'Password:', this.password);
+                    if (this.userlogin && this.password) {
+                        this.navigateTo('home');
+                    }
+                    // ...
+                })
+                .catch((error) => {
+                    console.log(error)
+                });
+            
         },
         convidado() {
             console.log('Login clicked. Username:', this.username, 'Password:', this.password);
@@ -87,8 +102,8 @@ button:hover {
 
 .menu-item {
     margin-top: 10px;
-  margin-bottom: 10px;
-  cursor: pointer;
+    margin-bottom: 10px;
+    cursor: pointer;
 }
 
 .menu-item span {
