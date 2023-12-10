@@ -1,12 +1,15 @@
 <template>
-  <div id="home">
-    <ListPostComponent :messages="messageDataList" />
+  <div id="app">
+    <div class="content">
+      <ListPostComponent :messages="messageDataList" />
+    </div>
   </div>
 </template>
 
 <script>
-import ListPostComponent from '@/components/ListPostComponent.vue';
 import { mapState, mapActions } from 'vuex';
+
+import ListPostComponent from '../components/ListPostComponent.vue';
 
 export default {
   name: 'HomeView',
@@ -17,50 +20,122 @@ export default {
   },
   methods: {
     ...mapActions({
-      fetchMessages: 'posts/fetchMessages',
+      fetchMessages: 'fetchMessages',
     }),
   },
   components: {
     ListPostComponent,
   },
   created() {
-    // Mock data (replace with your API call or any other data source)
     const messages = [
       {
+        id: 1,
         formattedDateTime: '2023-01-01 12:34',
-        messageId: '1',
         title: 'First Message',
         message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
         isLiked: false,
-        likeCount: 0,
-        commentCount: 0,
+        likeCount: 40,
+        comments: [
+          {
+            id: 1,
+            name: 'Marcelo aaa',
+            comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+            likeCount: 6
+          },
+           {
+            id: 1,
+            name: 'Marcelo aaa',
+            comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+            likeCount: 6
+          }
+          ,
+           {
+            id: 1,
+            name: 'Marcelo aaa',
+            comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+            likeCount: 6
+          }
+          ,
+           {
+            id: 1,
+            name: 'Marcelo aaa',
+            comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+            likeCount: 6
+          }
+          ,
+           {
+            id: 1,
+            name: 'Marcelo aaa',
+            comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+            likeCount: 6
+          }
+        ],
       },
       {
+        id: 2,
         formattedDateTime: '2023-01-01 12:34',
-        messageId: '1',
         title: 'First Message',
         message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
         isLiked: false,
-        likeCount: 0,
-        commentCount: 0,
+        likeCount: 12,
+        comments: [
+          {
+            id: 1,
+            name: 'Marcelo aaa',
+            comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+            likeCount: 6
+          },
+           {
+            id: 1,
+            name: 'Marcelo aaa',
+            comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+            likeCount: 6
+          },
+           {
+            id: 1,
+            name: 'Marcelo aaa',
+            comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+            likeCount: 6
+          }
+        ],
       },
       {
+        id: 3,
         formattedDateTime: '2023-01-01 12:34',
-        messageId: '1',
         title: 'First Message',
         message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
         isLiked: false,
-        likeCount: 0,
-        commentCount: 0,
+        likeCount: 54,
+         comments: [
+          {
+            id: 1,
+            name: 'Marcelo aaa',
+            comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+            likeCount: 6
+          },
+           {
+            id: 1,
+            name: 'Marcelo aaa',
+            comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+            likeCount: 6
+          }
+        ],
       },
       {
+        id: 4,
         formattedDateTime: '2023-01-01 12:34',
-        messageId: '1',
         title: 'First Message',
         message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
         isLiked: false,
-        likeCount: 0,
-        commentCount: 0,
+        likeCount: 76,
+         comments: [
+          {
+            id: 1,
+            name: 'Marcelo aaa',
+            comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+            likeCount: 6
+          }
+        ],
       }
     ];
 
@@ -68,3 +143,15 @@ export default {
   },
 };
 </script>
+
+<style>
+#app {
+  display: flex;
+}
+
+.content {
+  overflow-y: scroll; /* Permite que o conteúdo role verticalmente se necessário */
+  height: 100vh;
+  width: 100%;
+}
+</style>
