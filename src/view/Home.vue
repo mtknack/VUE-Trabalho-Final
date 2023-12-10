@@ -39,32 +39,35 @@ export default {
           {
             id: 1,
             name: 'Marcelo aaa',
-            comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+            comment: `Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, 
+            consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing 
+            elit Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, 
+            consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
             likeCount: 6
           },
            {
-            id: 1,
+            id: 2,
             name: 'Marcelo aaa',
             comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
             likeCount: 6
           }
           ,
            {
-            id: 1,
+            id: 3,
             name: 'Marcelo aaa',
             comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
             likeCount: 6
           }
           ,
            {
-            id: 1,
+            id: 4,
             name: 'Marcelo aaa',
             comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
             likeCount: 6
           }
           ,
            {
-            id: 1,
+            id: 5,
             name: 'Marcelo aaa',
             comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
             likeCount: 6
@@ -86,13 +89,13 @@ export default {
             likeCount: 6
           },
            {
-            id: 1,
+            id: 2,
             name: 'Marcelo aaa',
             comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
             likeCount: 6
           },
            {
-            id: 1,
+            id: 3,
             name: 'Marcelo aaa',
             comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
             likeCount: 6
@@ -114,7 +117,7 @@ export default {
             likeCount: 6
           },
            {
-            id: 1,
+            id: 2,
             name: 'Marcelo aaa',
             comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
             likeCount: 6
@@ -150,8 +153,6 @@ export default {
 }
 
 .content {
-  overflow-y: scroll; /* Permite que o conteúdo role verticalmente se necessário */
-  height: 100vh;
   width: 100%;
 }
 </style>

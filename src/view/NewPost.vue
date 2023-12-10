@@ -15,7 +15,7 @@
 
 <script>
 export default {
-    name: 'NewPost',
+  name: 'NewPost',
   data() {
     return {
       title: '',
@@ -29,10 +29,9 @@ export default {
           title: this.title,
           body: this.body,
         };
-        // Emitir um evento para informar que uma nova mensagem foi criada
+        
         this.$emit('message-created', newMessage);
 
-        // Limpar os campos após a criação da mensagem
         this.title = '';
         this.body = '';
       } else {
@@ -45,7 +44,7 @@ export default {
 
 <style scoped>
 .new-message-container {
-  max-width: 500px;
+  height: 80vh;
   margin: 20px auto;
   padding: 20px;
   border: 1px solid #ccc;
@@ -68,12 +67,17 @@ textarea {
   margin-bottom: 16px;
 }
 
+textarea {
+  height: 100px;
+}
+
 button {
   padding: 10px;
   background-color: #3498db;
   color: #fff;
   border: none;
   border-radius: 4px;
+  width: 200px;
   cursor: pointer;
 }
 

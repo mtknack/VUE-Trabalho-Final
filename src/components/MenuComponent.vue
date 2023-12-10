@@ -6,8 +6,11 @@
     <div class="menu-item" @click="navigateTo('login')">
       <span>Seus Posts</span>
     </div>
-    <div class="menu-item" @click="navigateTo('newPost')">
+    <div v-if="usuarioLogado" class="menu-item" @click="navigateTo('newPost')">
       <span>Novo Post</span>
+    </div>
+    <div class="menu-item" @click="navigateTo('login')">
+      <span>{{ usuarioLogado ? "Sair" : "Logar" }}</span>
     </div>
   </div>
 </template>
@@ -20,6 +23,10 @@ export default {
       // Use Vue Router to navigate to the specified route
       this.$router.push({ name: route });
     },
+    usuarioLogado(){
+      // fazer a teoria de puxar do local storage se o usuario está logado
+      return true
+    }
   },
 };
 </script>
