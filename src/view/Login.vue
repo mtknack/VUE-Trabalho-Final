@@ -2,13 +2,13 @@
     <div class="login-container">
         <h2>Login</h2>
         <form @enviar.prevent="login">
-        <label for="username">UserLogin:</label>
-        <input type="text" id="username" v-model="username" required>
+            <label for="username">UserLogin:</label>
+            <input type="text" id="username" v-model="username" required>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" v-model="password" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" v-model="password" required>
 
-        <button type="enviar" @click="login">Login</button>
+            <button type="enviar" @click="login">Login</button>
 
         </form>
         <div class="menu-item" @click="navigateTo('cadastro')">

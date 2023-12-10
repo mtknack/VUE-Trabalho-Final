@@ -13,7 +13,6 @@
       </button>
       <span class="comment-count">{{ mensagem[0].comments.length }} Comments</span>
     </div>
-    
     <div class="comments-section">
       <h3>Comments</h3>
       <ul class="comments-list">
@@ -33,8 +32,12 @@
       </ul>
       <div class="add-comment-section">
         <h3>Add a Comment</h3>
-        <textarea v-model="newCommentText" placeholder="Type your comment here"></textarea>
-        <button @click="addComment" class="comment-button">Comment</button>
+        <form @enviar.prevent="commentForm">
+            <input type="text" id="username" v-model="name" required placeholder="Digite seu nome">
+            <textarea v-model="newCommentText" placeholder="Escreva seu comentario" required></textarea>
+            <button @click="addComment" class="comment-button">Comment</button>
+        </form>
+        
       </div>
     </div>
   </div>
@@ -49,11 +52,12 @@ export default {
   data() {
     return {
       mensagem: {},
+      name: '',
       newCommentText: '',
     };
   },
   computed: {
-    ...mapActions('post', ['getMessagesFilter', 'addCommentToMessage', 'toggleLikeMessage', 'toggleLikeComment']),
+    ...mapActions('post', ['getMessagesFilter', 'addCommentToMessage']),
   },
   async mounted() {
     try {
@@ -78,10 +82,11 @@ export default {
       });
     },
     addComment() {
-      if (this.newCommentText.trim() !== '') {
+      if (this.newCommentText.trim() !== '' && this.name.trim() !== '') {
         this.$store.dispatch('addCommentToMessage', {
-          messageId: this.mensagem[0].messageId,
-          commentText: this.newCommentText,
+          messageId: this.mensagem[0].id,
+          name: this.name,
+          comment: this.newCommentText,
         });
         // Limpar o texto do novo comentário
         this.newCommentText = '';
@@ -161,6 +166,12 @@ export default {
   margin-top: 20px;
   display: flex;
   flex-direction: column;
+}
+
+.add-comment-section input {
+  width: 40%;
+  padding: 6px;
+  margin-bottom: 10px;
 }
 
 .add-comment-section textarea {

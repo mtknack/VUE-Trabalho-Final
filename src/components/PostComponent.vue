@@ -2,6 +2,7 @@
   <div class="message-container">
     <div class="message-info">
       <p>{{ formatDateTime(messageData.formattedDateTime) }}</p>
+      <button class="delete-button" @click="deletarPost">Deletar</button>
     </div>
     <div class="message-content">
       <h3>{{ messageData.title }}</h3>
@@ -58,14 +59,20 @@ export default {
         commentText: this.commentText,
       });
 
-      // Optionally, you can clear the textarea after adding a comment
       this.commentText = '';
     },
+    deletarPost(){
+      console.log('deletarrrrrrr')
+    }
   },
 };
 </script>
 
 <style scoped>
+p{
+  margin: 0;
+}
+
 .message-container {
   border: 1px solid #ccc;
   padding: 10px;
@@ -75,6 +82,8 @@ export default {
 .message-info {
   font-size: 12px;
   color: #888;
+  display: flex;
+  justify-content: space-between;
 }
 
 .message-content {
@@ -127,5 +136,18 @@ textarea {
 
 .comment-button:hover {
   background-color: #219d52;
+}
+
+.delete-button {
+  background-color: #e74c3c;
+  color: #fff;
+  width: 100px;
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: #c0392b;
 }
 </style>
