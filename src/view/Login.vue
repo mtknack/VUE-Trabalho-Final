@@ -8,7 +8,10 @@
             <input type="password" id="password" v-model="password" required>
             <button @click="login()">Login</button>
         </form>
-        <div class="menu-item" @click="convidado()">
+        <div class="menu-item" @click="navigateTo('cadastro')">
+            <span>Cadastrar</span>
+        </div>
+        <div class="menu-item" @click="navigateTo('home')">
             <span>Entrar como convidado</span>
         </div>
     </div>
@@ -19,22 +22,25 @@ export default {
     name: 'LoginView',
     data() {
         return {
-            username: '',
+            userlogin: '',
             password: ''
         };
     },
     methods: {
         login() {
-            // Implement your login logic here
-            console.log('Login clicked. Username:', this.username, 'Password:', this.password);
-            localStorage.setItem('user', 'guest')
-            this.$router.push({ name: 'home' });
+            console.log('Login clicked. Username:', this.userlogin, 'Password:', this.password);
+            if(this.username && this.password){
+                this.navigateTo('home')
+            }
         },
         convidado() {
             console.log('Login clicked. Username:', this.username, 'Password:', this.password);
             localStorage.setItem('user', 'guest')
             this.$router.push({ name: 'home' });
         },
+        navigateTo(route) {
+            this.$router.push({ name: route });
+        }
     }
 };
 </script>
@@ -80,9 +86,9 @@ button:hover {
 }
 
 .menu-item {
-    margin-top: 20px;
-    margin-bottom: 10px;
-    cursor: pointer;
+    margin-top: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
 }
 
 .menu-item span {

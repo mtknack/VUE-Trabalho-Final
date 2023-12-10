@@ -16,7 +16,7 @@ export default {
   name: 'App',
   computed: {
     isLoginRoute() {
-      return this.$route.name === 'login';
+      return this.$route.name === 'login' || this.$route.name  === 'cadastro';
     },
   },
   components:{
