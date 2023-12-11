@@ -1,154 +1,169 @@
 <template>
-  <div class="message-container">
-    <div class="message-info">
-      <p>{{ formatDateTime(messageData.data) }}</p>
-      <button v-if="messageData.userID === userID" class="delete-button" @click="deletarPost">Deletar</button>
+    <div class="message-container">
+        <div class="message-info">
+            <p>{{ formatDateTime(messageData.data) }}</p>
+            <button v-if="messageData.userID === userID" class="delete-button" @click="deletarPost">Deletar</button>
+        </div>
+        <div class="message-content">
+            <h3>{{ messageData.title }}</h3>
+            <p>{{ messageData.message }}</p>
+        </div>
+        <div class="message-interactions">
+            <button @click="toggleLike" class="like-button">
+                {{ messageData.isLiked ? 'Unlike' : 'Like' }} {{ messageData.likeCount }}
+            </button>
+            <button @click="navigateTo(`/post/${messageData.id}`);" class="comment-button">
+                {{ messageData.comments.length }} comentários
+            </button>
+        </div>
     </div>
-    <div class="message-content">
-      <h3>{{ messageData.title }}</h3>
-      <p>{{ messageData.message }}</p>
-    </div>
-    <div class="message-interactions">
-      <button @click="toggleLike" class="like-button">
-        {{ messageData.isLiked ? 'Unlike' : 'Like' }} {{ messageData.likeCount }}
-      </button>
-      <button @click="navigateTo(`/post/${messageData.id}`);" class="comment-button">
-        {{ messageData.comments.length }} comentários
-      </button>
-    </div>
-  </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import { fireStoreDB } from '@/config/firebase';
-import { deleteDoc, doc } from 'firebase/firestore';
+import { deleteDoc, doc, runTransaction } from 'firebase/firestore';
 
 export default {
-  name: 'PostComponent',
-  props: {
-    messageData: {
-      type: Object,
-      required: true,
+    name: 'PostComponent',
+    props: {
+        messageData: {
+            type: Object,
+            required: true,
+        },
     },
-  },
-  data() {
-    return {
-      commentText: '',
-      userID: localStorage.getItem('userID')
-    };
-  },
-  methods: {
-    navigateTo(route) {
-      // Use Vue Router to navigate to the specified route
-      this.$router.push({ path: route });
+    data() {
+        return {
+            commentText: '',
+            userID: localStorage.getItem('userID')
+        };
     },
-    formatDateTime(dateTime) {
-      const NAN0_SECONDS = dateTime * 1000 // O new Date() trabalha com nanosegundos, mas a data vem em segundos do firebase
-      const formattedDate = new Date(NAN0_SECONDS).toLocaleString('pt-BR');
-      return formattedDate;
+    computed: {
+        ...mapGetters({
+            likes: 'getLikes'
+        })
     },
-    toggleLike() {
-      // Emit an event to inform that the "like" button was clicked
-      this.$emit('like-clicked', this.messageData.messageId);
-    },
-    addComment() {
-      // Emit an event to inform that the "comment" button was clicked
-      this.$emit('comment-clicked', {
-        messageId: this.messageData.messageId,
-        commentText: this.commentText,
-      });
+    methods: {
+        navigateTo(route) {
+            // Use Vue Router to navigate to the specified route
+            this.$router.push({ path: route });
+        },
+        formatDateTime(dateTime) {
+            const NAN0_SECONDS = dateTime * 1000 // O new Date() trabalha com nanosegundos, mas a data vem em segundos do firebase
+            const formattedDate = new Date(NAN0_SECONDS).toLocaleString('pt-BR');
+            return formattedDate;
+        },
+        toggleLike() {
+            // Emit an event to inform that the "like" button was clicked
+            this.$emit('like-clicked', this.messageData.messageId);
+            // const docRef = doc(fireStoreDB, 'posts', this.$props.messageData.id)
+            if(this.likes.includes(this.messageData.id)) {
+                const docRef = doc(fireStoreDB, 'posts', this.messageData.id)
+                this.$store.commit('removeLike', this.messageData.id)
+                
+            }
+            // this.messageData.isLiked = !this.messageData.isLiked
+            
+        },
+        addComment() {
+            // Emit an event to inform that the "comment" button was clicked
+            this.$emit('comment-clicked', {
+                messageId: this.messageData.messageId,
+                commentText: this.commentText,
+            });
 
-      this.commentText = '';
+            this.commentText = '';
+        },
+        deletarPost() {
+            const docRef = doc(fireStoreDB, 'posts', this.$props.messageData.id)
+            deleteDoc(docRef)
+            // Documento deletado no firebase, só fazer um remove dele na vuex store agora
+        }
     },
-    deletarPost(){
-      const docRef = doc(fireStoreDB, 'posts', this.$props.messageData.id)
-      deleteDoc(docRef)
-      // Documento deletado no firebase, só fazer um remove dele na vuex store agora
-    }
-  },
 };
 </script>
 
 <style scoped>
-p{
-  margin: 0;
+p {
+    margin: 0;
 }
 
 .message-container {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin: 10px 0;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px 0;
 }
 
 .message-info {
-  font-size: 12px;
-  color: #888;
-  display: flex;
-  justify-content: space-between;
+    font-size: 12px;
+    color: #888;
+    display: flex;
+    justify-content: space-between;
 }
 
 .message-content {
-  margin: 10px 0;
+    margin: 10px 0;
 }
 
 .message-interactions {
-  align-items: center;
-  font-size: 14px;
-  color: #333;
+    align-items: center;
+    font-size: 14px;
+    color: #333;
 }
 
 .like-button {
-  background-color: #3498db;
-  color: #fff;
-  padding: 5px 10px;
-  border: none;
-  cursor: pointer;
+    background-color: #3498db;
+    color: #fff;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
 }
 
 .like-button:hover {
-  background-color: #2980b9;
+    background-color: #2980b9;
 }
 
 .comment-count {
-  margin-left: 10px;
+    margin-left: 10px;
 }
 
 .comment-section {
-  margin-top: 10px;
-  display: flex;
-  flex-direction: column;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
 }
 
 textarea {
-  width: 90%;
-  padding: 8px;
-  margin-bottom: 10px;
-  resize: vertical; /* Allow vertical resizing */
+    width: 90%;
+    padding: 8px;
+    margin-bottom: 10px;
+    resize: vertical;
+    /* Allow vertical resizing */
 }
 
 .comment-button {
-  background-color: #27ae60;
-  color: #fff;
-  width: 100px;
-  padding: 5px 10px;
-  border: none;
-  cursor: pointer;
+    background-color: #27ae60;
+    color: #fff;
+    width: 100px;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
 }
 
 .comment-button:hover {
-  background-color: #219d52;
+    background-color: #219d52;
 }
 
 .delete-button {
-  background-color: #e74c3c;
-  color: #fff;
-  width: 100px;
-  padding: 5px 10px;
-  border: none;
-  cursor: pointer;
+    background-color: #e74c3c;
+    color: #fff;
+    width: 100px;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
 }
 
 .delete-button:hover {
-  background-color: #c0392b;
+    background-color: #c0392b;
 }
 </style>

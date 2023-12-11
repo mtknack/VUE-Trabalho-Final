@@ -30,25 +30,23 @@ export default {
         };
     },
     methods: {
-        login(e) {
+        async login(e) {
             e.preventDefault()
 
-            if (!this.userlogin || !this.password){
+            if (!this.userlogin || !this.password) {
                 return alert('Preencha todos os campos')
             }
 
-            signInWithEmailAndPassword(auth, this.userlogin, this.password)
-                .then(userCredential => {
-                    localStorage.setItem('userID', userCredential.user.uid)
-                    this.navigateTo('home');
-                })
-                .catch((error) => {
-                    console.log(error)
-                });
+            const userCredential = await signInWithEmailAndPassword(auth, this.userlogin, this.password).catch((error) => {
+                console.log(error)
+            })
+
+            localStorage.setItem('userID', userCredential.user.uid)
+            this.navigateTo('home');
+
+
         },
         convidado() {
-            console.log('Login clicked. Username:', this.username, 'Password:', this.password);
-            localStorage.setItem('user', 'guest')
             this.$router.push({ name: 'home' });
         },
         navigateTo(route) {

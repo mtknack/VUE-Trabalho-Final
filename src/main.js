@@ -7,7 +7,7 @@ import './style.css'
 Vue.config.productionTip = false
 
 new Vue({
-  router,
-  render: h => h(App),
-  store
+    router,
+    render: h => h(App),
+    store
 }).$mount('#app')

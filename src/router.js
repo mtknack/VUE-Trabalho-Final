@@ -1,5 +1,5 @@
 import Vue from "vue"
-import Router  from "vue-router";
+import Router from "vue-router";
 
 import Login from './view/Login.vue';
 import Home from './view/Home.vue';
@@ -12,37 +12,37 @@ Vue.use(Router)
 
 export default new Router({
     mode: 'history',
-    routes:[
-      {
-        path: '/',
-        component: Login,
-        name: 'login'
-      },
-      {
-        path: '/cadastro',
-        component: Cadastrar,
-        name: 'cadastro',
-      },
-      {
-        path: '/home',
-        component: Home,
-        name: 'home'
-      },
-      {
-        path: '/myposts',
-        component: UserPosts,
-        name: 'myposts'
-      },
-      {
-        path: '/new-post',
-        component: NewPost,
-        name: 'newPost'
-      },
-      {
-        path: '/post/:id',
-        component: Post,
-        name: 'post',
-        props: true
-      },
+    routes: [
+        {
+            path: '/',
+            component: Login,
+            name: 'login'
+        },
+        {
+            path: '/cadastro',
+            component: Cadastrar,
+            name: 'cadastro',
+        },
+        {
+            path: '/home',
+            component: Home,
+            name: 'home'
+        },
+        {
+            path: '/myposts',
+            component: UserPosts,
+            name: 'myposts'
+        },
+        {
+            path: '/new-post',
+            component: NewPost,
+            name: 'newPost'
+        },
+        {
+            path: '/post/:id',
+            component: Post,
+            name: 'post',
+            props: true
+        },
     ]
 })
