@@ -3,20 +3,22 @@
     <div class="menu-item" @click="navigateTo('home')">
       <span>Home</span>
     </div>
-    <div class="menu-item" @click="navigateTo('login')">
+    <div class="menu-item" @click="navigateTo('myposts')">
       <span>Seus Posts</span>
     </div>
     <div v-if="usuarioLogado" class="menu-item" @click="navigateTo('newPost')">
       <span>Novo Post</span>
     </div>
-    <div class="menu-item" @click="navigateTo('login')">
-      <span>{{ usuarioLogado ? "Sair" : "Logar" }}</span>
+    <div class="menu-item" @click="logout()">
+      <span>{{ usuarioLogado() ? "Sair" : "Logar" }}</span>
     </div>
   </div>
 </template>
 
 <script>
+import { auth } from '@/config/firebase';
 import { signOut } from 'firebase/auth'
+
 
 export default {
   name: 'MenuComponent',
@@ -26,11 +28,13 @@ export default {
       this.$router.push({ name: route });
     },
     logout() {
-      signOut()
+      localStorage.removeItem('userID')
+      signOut(auth)
+      this.$router.push({ name: 'login' });
     },
     usuarioLogado(){
       // fazer a teoria de puxar do local storage se o usuario está logado
-      return true
+      return Boolean(localStorage.getItem('userID'))
     }
   },
 };

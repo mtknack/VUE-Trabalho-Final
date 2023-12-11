@@ -2,40 +2,42 @@
     <div class="login-container">
         <h2>Cadastro</h2>
         <form @enviar.prevent="login">
-        <label for="username">User Name:</label>
-        <input type="text" id="username" v-model="username" required>
+            <label for="username">User Name:</label>
+            <input type="text" id="username" v-model="username" required>
 
-        <label for="userlogin">User Login:</label>
-        <input type="text" id="userlogin" v-model="userlogin" required>
+            <label for="email">Email:</label>
+            <input type="email" id="email" v-model="email" required>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" v-model="password" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" v-model="password" required>
 
-        <button @click="cadastrar">Cadastrar</button>
-
+            <button @click="cadastrar()">Cadastrar</button>
         </form>
-        <div class="menu-item" @click="navigateTo('home')">
-            <span>Entrar como convidado</span>
-        </div>
     </div>
 </template>
 
 <script>
+import { fireStoreDB, auth } from '@/config/firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
+
 export default {
     name: 'CadastroView',
     data() {
         return {
             username: '',
             password: '',
-            userlogin: ''
+            email: ''
         };
     },
     methods: {
         cadastrar() {
-            console.log('Username:', this.username, 'UserLOGIN:', this.userlogin, 'Password:', this.password);
-            if(this.username && this.userlogin && this.password){
-                this.navigateTo('login')
-            }
+            createUserWithEmailAndPassword(auth, this.email, this.password).then(userCredential => {
+                localStorage.setItem('userID', userCredential.user.uid)
+                const docRef = doc(fireStoreDB, 'users', userCredential.user.uid)
+                setDoc(docRef, {username: this.username})
+                this.navigateTo('home')
+            }).catch(error => console.log(error))
         },
         navigateTo(route) {
             this.$router.push({ name: route });

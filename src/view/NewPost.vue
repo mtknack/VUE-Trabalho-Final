@@ -14,6 +14,9 @@
 </template>
 
 <script>
+import { fireStoreDB } from '@/config/firebase';
+import { collection, addDoc } from 'firebase/firestore';
+
 export default {
   name: 'NewPost',
   data() {
@@ -24,19 +27,23 @@ export default {
   },
   methods: {
     createMessage() {
-      if (this.title && this.body) {
-        const newMessage = {
-          title: this.title,
-          body: this.body,
-        };
-        
-        this.$emit('message-created', newMessage);
-
-        this.title = '';
-        this.body = '';
-      } else {
-        alert('Por favor, preencha todos os campos.');
+      if (!this.title || !this.body) {
+        return alert('Por favor, preencha todos os campos.');
       }
+      
+      const newMessage = {
+        title: this.title,
+        message: this.body,
+        userID: localStorage.getItem('userID'),
+        data: Date.now(),
+        comments: []
+      };
+
+      const collectionRef = collection(fireStoreDB, 'posts')
+      addDoc(collectionRef, newMessage)
+
+      this.$emit('message-created', newMessage);
+      this.$router.push({ name: 'home' });
     },
   },
 };

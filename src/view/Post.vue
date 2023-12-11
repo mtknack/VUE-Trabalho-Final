@@ -11,7 +11,7 @@
       <button @click="toggleLike" class="like-button">
         {{ mensagem[0].isLiked ? 'Unlike' : 'Like' }} {{ mensagem[0].likeCount }}
       </button>
-      <span class="comment-count">{{ mensagem[0].comments.length }} Comments</span>
+      <span class="comment-count">{{ mensagem[0].comments.length }} comentários</span>
     </div>
     <div class="comments-section">
       <h3>Comments</h3>
@@ -33,6 +33,8 @@
       <div class="add-comment-section">
         <h3>Add a Comment</h3>
         <form @enviar.prevent="commentForm">
+            <!-- Mano, pode tirar isso aqui? Pq o usuario ja está salvo no localstorage, n precisa se identificar -->
+            <!-- so se for convidado talvez, n lembro o que o giu falou -->
             <input type="text" id="username" v-model="name" required placeholder="Digite seu nome">
             <textarea v-model="newCommentText" placeholder="Escreva seu comentario" required></textarea>
             <button @click="addComment" class="comment-button">Comment</button>
@@ -68,8 +70,8 @@ export default {
   },
   methods: {
     formatDateTime(dateTime) {
-      const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
-      const formattedDate = new Date(dateTime).toLocaleString('en-US', options);
+      const NAN0_SECONDS = dateTime * 1000 // O new Date() trabalha com nanosegundos, mas a data vem em segundos do firebase
+      const formattedDate = new Date(NAN0_SECONDS).toLocaleString('pt-BR');
       return formattedDate;
     },
     toggleLike() {

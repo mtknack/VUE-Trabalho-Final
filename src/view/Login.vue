@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import { firebaseApp } from '../config/firebase'
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from '../config/firebase'
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 export default {
     name: 'LoginView',
@@ -32,21 +32,19 @@ export default {
     methods: {
         login(e) {
             e.preventDefault()
-            const auth = getAuth(firebaseApp);
+
+            if (!this.userlogin || !this.password){
+                return alert('Preencha todos os campos')
+            }
+
             signInWithEmailAndPassword(auth, this.userlogin, this.password)
                 .then(userCredential => {
-                    // Signed in 
-                    console.log(userCredential)
-                    console.log('Login clicked. Username:', this.userlogin, 'Password:', this.password);
-                    if (this.userlogin && this.password) {
-                        this.navigateTo('home');
-                    }
-                    // ...
+                    localStorage.setItem('userID', userCredential.user.uid)
+                    this.navigateTo('home');
                 })
                 .catch((error) => {
                     console.log(error)
                 });
-            
         },
         convidado() {
             console.log('Login clicked. Username:', this.username, 'Password:', this.password);

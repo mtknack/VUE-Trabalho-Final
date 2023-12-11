@@ -10,22 +10,19 @@
 import { mapState, mapActions } from 'vuex';
 import ListPostComponent from '../components/ListPostComponent.vue';
 import {fireStoreDB} from '../config/firebase'
-import { collection, getDocs, getDoc, doc } from 'firebase/firestore'
+import { collection, getDocs } from 'firebase/firestore'
 
+const postsRef = collection(fireStoreDB, 'posts')
 
 export default {
   name: 'HomeView',
   async created() {
-    const postsRef = collection(fireStoreDB, 'posts')
-    const userDocRef = doc(fireStoreDB, 'users', localStorage.getItem('userID'))
-    const userDoc = await getDoc(userDocRef)
     const { docs } = await getDocs(postsRef)
     const posts = docs.map(post => ({
       id: post.id,
-      isLiked: userDoc.data().likes.includes(post.id),
       ...post.data()
-    }))
-    // console.log(posts);
+    })).filter(post => post.userID === localStorage.getItem('userID'))
+    console.log(posts)
     this.$store.commit('setMessages', posts);
   },
   computed: {

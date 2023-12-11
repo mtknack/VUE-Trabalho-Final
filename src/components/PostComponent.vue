@@ -1,25 +1,28 @@
 <template>
   <div class="message-container">
     <div class="message-info">
-      <p>{{ formatDateTime(messageData.formattedDateTime) }}</p>
-      <button class="delete-button" @click="deletarPost">Deletar</button>
+      <p>{{ formatDateTime(messageData.data) }}</p>
+      <button v-if="messageData.userID === userID" class="delete-button" @click="deletarPost">Deletar</button>
     </div>
     <div class="message-content">
       <h3>{{ messageData.title }}</h3>
       <p>{{ messageData.message }}</p>
     </div>
-    <!-- <div class="message-interactions">
+    <div class="message-interactions">
       <button @click="toggleLike" class="like-button">
-        {{ messageData.isLiked ? 'Unlikes' : 'Likes' }} {{ messageData.likeCount }}
+        {{ messageData.isLiked ? 'Unlike' : 'Like' }} {{ messageData.likeCount }}
       </button>
       <button @click="navigateTo(`/post/${messageData.id}`);" class="comment-button">
-        Comments {{ contadorDeComentarios(messageData.comments) }}
+        {{ messageData.comments.length }} comentários
       </button>
-    </div> -->
+    </div>
   </div>
 </template>
 
 <script>
+import { fireStoreDB } from '@/config/firebase';
+import { deleteDoc, doc } from 'firebase/firestore';
+
 export default {
   name: 'PostComponent',
   props: {
@@ -31,6 +34,7 @@ export default {
   data() {
     return {
       commentText: '',
+      userID: localStorage.getItem('userID')
     };
   },
   methods: {
@@ -39,14 +43,9 @@ export default {
       this.$router.push({ path: route });
     },
     formatDateTime(dateTime) {
-      // Função para formatar a data no formato desejado
-      const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
-      const formattedDate = new Date(dateTime).toLocaleString('en-US', options);
+      const NAN0_SECONDS = dateTime * 1000 // O new Date() trabalha com nanosegundos, mas a data vem em segundos do firebase
+      const formattedDate = new Date(NAN0_SECONDS).toLocaleString('pt-BR');
       return formattedDate;
-    },
-    contadorDeComentarios(comentarios) {
-      // Função para formatar a data no formato desejado
-      return comentarios.length;
     },
     toggleLike() {
       // Emit an event to inform that the "like" button was clicked
@@ -62,7 +61,9 @@ export default {
       this.commentText = '';
     },
     deletarPost(){
-      console.log('deletarrrrrrr')
+      const docRef = doc(fireStoreDB, 'posts', this.$props.messageData.id)
+      deleteDoc(docRef)
+      // Documento deletado no firebase, só fazer um remove dele na vuex store agora
     }
   },
 };
