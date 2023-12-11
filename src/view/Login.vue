@@ -11,7 +11,7 @@
         <div class="menu-item" @click="navigateTo('cadastro')">
             <span>Cadastrar</span>
         </div>
-        <div class="menu-item" @click="navigateTo('home')">
+        <div class="menu-item" @click="resetLocalStorage()">
             <span>Entrar como convidado</span>
         </div>
     </div>
@@ -53,6 +53,10 @@ export default {
         },
         navigateTo(route) {
             this.$router.push({ name: route });
+        },
+        resetLocalStorage(){
+            localStorage.clear();
+            this.navigateTo('home')
         }
     }
 };

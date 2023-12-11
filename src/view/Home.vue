@@ -25,7 +25,7 @@ export default {
       isLiked: userDoc.data().likes.includes(post.id),
       ...post.data()
     }))
-    // console.log(posts);
+    
     this.$store.commit('setMessages', posts);
   },
   computed: {
@@ -40,7 +40,7 @@ export default {
   },
   components: {
     ListPostComponent,
-  },
+  }
 };
 </script>
 

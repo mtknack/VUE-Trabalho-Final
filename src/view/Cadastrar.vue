@@ -12,6 +12,10 @@
             <input type="password" id="password" v-model="password" required>
 
             <button @click="cadastrar()">Cadastrar</button>
+
+            <div class="menu-item" @click="navigateTo('login')">
+            <span>Logar</span>
+        </div>
         </form>
     </div>
 </template>

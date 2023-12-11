@@ -3,10 +3,10 @@
     <div class="menu-item" @click="navigateTo('home')">
       <span>Home</span>
     </div>
-    <div class="menu-item" @click="navigateTo('myposts')">
+    <div v-if="usuarioLogado() ? true : false" class="menu-item" @click="navigateTo('myposts')">
       <span>Seus Posts</span>
     </div>
-    <div v-if="usuarioLogado" class="menu-item" @click="navigateTo('newPost')">
+    <div v-if="usuarioLogado() ? true : false" class="menu-item" @click="navigateTo('newPost')">
       <span>Novo Post</span>
     </div>
     <div class="menu-item" @click="logout()">
