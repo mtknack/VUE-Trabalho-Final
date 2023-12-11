@@ -43,8 +43,6 @@ export default {
 
             localStorage.setItem('userID', userCredential.user.uid)
             this.navigateTo('home');
-
-
         },
         convidado() {
             this.$router.push({ name: 'home' });

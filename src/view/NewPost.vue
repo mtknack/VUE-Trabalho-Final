@@ -36,7 +36,8 @@ export default {
                 message: this.body,
                 userID: localStorage.getItem('userID'),
                 data: Date.now(),
-                comments: []
+                comments: [],
+                likes: []
             };
 
             const collectionRef = collection(fireStoreDB, 'posts')

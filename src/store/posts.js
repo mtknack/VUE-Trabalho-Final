@@ -14,7 +14,7 @@ export default {
                     id: state.messageDataList[postIndex].comments.length + 1,
                     name,
                     comment,
-                    likeCount: 0,
+                    likes: [],
                 });
             }
         },

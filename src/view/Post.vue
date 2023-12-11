@@ -86,6 +86,7 @@ export default {
         },
         addComment() {
             if (this.newCommentText.trim() !== '' && this.name.trim() !== '') {
+                
                 this.$store.dispatch('addCommentToMessage', {
                     messageId: this.mensagem[0].id,
                     name: this.name,

@@ -3,16 +3,9 @@
         <div class="message-header">
             <p>Mensagens: {{ messageDataList.length }}</p>
         </div>
-  <div class="listPost">
-    <div class="message-header">
-      <p>Mensagens: {{ messageDataList.length }}</p>
-    </div>
-    <PostComponent
-      v-for="messageData in messageDataList"
-      :key="messageData.messageId"
-      :messageData="messageData"
-    />
-  </div>
+        <div class="listPost">
+            <PostComponent v-for="messageData in messageDataList" :key="messageData.messageId" :messageData="messageData" />
+        </div>
     </div>
 </template>
 

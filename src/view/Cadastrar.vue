@@ -21,9 +21,8 @@
 </template>
 
 <script>
-import { fireStoreDB, auth } from '@/config/firebase';
+import { auth } from '@/config/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
 
 export default {
     name: 'CadastroView',
@@ -38,8 +37,6 @@ export default {
         cadastrar() {
             createUserWithEmailAndPassword(auth, this.email, this.password).then(userCredential => {
                 localStorage.setItem('userID', userCredential.user.uid)
-                const docRef = doc(fireStoreDB, 'users', userCredential.user.uid)
-                setDoc(docRef, { username: this.username })
                 this.navigateTo('home')
             }).catch(error => console.log(error))
         },

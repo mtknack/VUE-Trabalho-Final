@@ -10,7 +10,7 @@
         </div>
         <div class="message-interactions">
             <button @click="toggleLike" class="like-button">
-                {{ messageData.isLiked ? 'Unlike' : 'Like' }} {{ messageData.likeCount }}
+                {{ messageData.likes.includes(this.userID) ? 'Unlike' : 'Like' }} {{ messageData.likes.length }}
             </button>
             <button @click="navigateTo(`/post/${messageData.id}`);" class="comment-button">
                 {{ messageData.comments.length }} comentários
@@ -22,7 +22,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import { fireStoreDB } from '@/config/firebase';
-import { deleteDoc, doc, runTransaction } from 'firebase/firestore';
+import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
 
 export default {
     name: 'PostComponent',
@@ -49,21 +49,27 @@ export default {
             this.$router.push({ path: route });
         },
         formatDateTime(dateTime) {
-            const NAN0_SECONDS = dateTime * 1000 // O new Date() trabalha com nanosegundos, mas a data vem em segundos do firebase
-            const formattedDate = new Date(NAN0_SECONDS).toLocaleString('pt-BR');
+            const formattedDate = new Date(dateTime).toLocaleString('pt-BR');
             return formattedDate;
         },
         toggleLike() {
+            const post = doc(fireStoreDB, 'posts', this.messageData.id)
+
             // Emit an event to inform that the "like" button was clicked
-            this.$emit('like-clicked', this.messageData.messageId);
-            // const docRef = doc(fireStoreDB, 'posts', this.$props.messageData.id)
-            if(this.likes.includes(this.messageData.id)) {
-                const docRef = doc(fireStoreDB, 'posts', this.messageData.id)
+            // this.$emit('like-clicked', this.userID);
+            if (this.messageData.likes.includes(this.userID)) {
                 this.$store.commit('removeLike', this.messageData.id)
-                
+                updateDoc(post, {
+                    ...this.messageData,
+                    likes: this.messageData.likes.filter(id => id != this.userID)
+                }).catch(error => console.log(error))
+                return
             }
-            // this.messageData.isLiked = !this.messageData.isLiked
-            
+            updateDoc(post, {
+                ...this.messageData,
+                likes: [...this.messageData.likes, this.userID]
+            })
+
         },
         addComment() {
             // Emit an event to inform that the "comment" button was clicked
