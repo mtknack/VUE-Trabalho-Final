@@ -58,7 +58,9 @@ export default {
         },
         toggleLike() {
             const post = doc(fireStoreDB, 'posts', this.messageData.id)
-
+            if(!this.userID) {
+                return this.navigateTo('/')
+            }
             // Emit an event to inform that the "like" button was clicked
             if (this.messageData.likes.includes(this.userID)) {
                 updateDoc(post, {
