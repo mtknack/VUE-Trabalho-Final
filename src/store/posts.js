@@ -18,18 +18,19 @@ export default {
                 });
             }
         },
+        addLike(state, {index, userID}) {
+            state.messageDataList[index].likes.push(userID)
+        },
+        removeLike(state, {index, userID}) {
+            state.messageDataList[index].likes.splice(userID, 1)
+        }
     },
     actions: {
         fetchMessages(context, messages) {
             // Aqui você pode realizar lógica assíncrona, se necessário
-
-            setTimeout(() => {
-                context.commit('setMessages', messages);
-            }, 1000);
+            context.commit('setMessages', messages);
         },
         getMessagesFilter({ state }, id) {
-
-            console.log(id, state)
             return state.messageDataList.filter(mensagem => mensagem.id == id);
         },
         addCommentToMessage({ commit }, { messageId, name, comment }) {

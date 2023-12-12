@@ -22,7 +22,6 @@ export default {
             id: post.id,
             ...post.data()
         }))
-        // console.log(posts);
         this.$store.commit('setMessages', posts);
     },
     computed: {

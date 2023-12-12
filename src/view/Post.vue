@@ -70,8 +70,7 @@ export default {
     },
     methods: {
         formatDateTime(dateTime) {
-            const NAN0_SECONDS = dateTime * 1000 // O new Date() trabalha com nanosegundos, mas a data vem em segundos do firebase
-            const formattedDate = new Date(NAN0_SECONDS).toLocaleString('pt-BR');
+            const formattedDate = new Date(dateTime).toLocaleString('pt-BR');
             return formattedDate;
         },
         toggleLike() {

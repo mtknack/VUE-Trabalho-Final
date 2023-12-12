@@ -4,7 +4,8 @@
             <p>Mensagens: {{ messageDataList.length }}</p>
         </div>
         <div class="listPost">
-            <PostComponent v-for="messageData in messageDataList" :key="messageData.messageId" :messageData="messageData" />
+            <PostComponent v-for="(messageData, index) in messageDataList" :key="messageData.messageId"
+                :messageData="messageData" :index="index" />
         </div>
     </div>
 </template>
@@ -28,7 +29,7 @@ export default {
 <style scoped>
 .message-header {
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
     margin-bottom: 10px;
 }
 

@@ -10,7 +10,7 @@
         </div>
         <div class="message-interactions">
             <button @click="toggleLike" class="like-button">
-                {{ messageData.likes.includes(this.userID) ? 'Unlike' : 'Like' }} {{ messageData.likes.length }}
+                {{ likeTexto }} {{ messageData.likes.length }}
             </button>
             <button @click="navigateTo(`/post/${messageData.id}`);" class="comment-button">
                 {{ messageData.comments.length }} comentários
@@ -31,6 +31,10 @@ export default {
             type: Object,
             required: true,
         },
+        index: {
+            type: Number,
+            required: true,
+        }
     },
     data() {
         return {
@@ -39,6 +43,9 @@ export default {
         };
     },
     computed: {
+        likeTexto() {
+            return this.messageData.likes.includes(this.userID) ? 'Unlike' : 'Like'
+        },
         ...mapGetters({
             likes: 'getLikes'
         })
@@ -56,18 +63,24 @@ export default {
             const post = doc(fireStoreDB, 'posts', this.messageData.id)
 
             // Emit an event to inform that the "like" button was clicked
-            // this.$emit('like-clicked', this.userID);
             if (this.messageData.likes.includes(this.userID)) {
-                this.$store.commit('removeLike', this.messageData.id)
                 updateDoc(post, {
                     ...this.messageData,
                     likes: this.messageData.likes.filter(id => id != this.userID)
                 }).catch(error => console.log(error))
+                this.$store.commit('removeLike', {
+                    index: this.index,
+                    userID: this.userID
+                })
                 return
             }
             updateDoc(post, {
                 ...this.messageData,
                 likes: [...this.messageData.likes, this.userID]
+            })
+            this.$store.commit('addLike', {
+                index: this.index,
+                userID: this.userID
             })
 
         },
