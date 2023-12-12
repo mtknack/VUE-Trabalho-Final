@@ -39,7 +39,7 @@ export default new Router({
             name: 'newPost'
         },
         {
-            path: '/post/:id',
+            path: '/post/:id/:index',
             component: Post,
             name: 'post',
             props: true

@@ -1,6 +1,6 @@
 <template>
     <div v-if="mensagem.length > 0" class="post-detail-container">
-        <h2>{{ mensagem[0].title }}</h2>
+        <h1>{{ mensagem[0].title }}</h1>
         <div class="post-info">
             <p>{{ formatDateTime(mensagem[0].formattedDateTime) }}</p>
         </div>
@@ -9,7 +9,7 @@
         </div>
         <div class="post-interactions">
             <button @click="toggleLike" class="like-button">
-                {{ mensagem[0].isLiked ? 'Unlike' : 'Like' }} {{ mensagem[0].likeCount }}
+                {{ mensagem[0].isLiked ? 'Unlike' : 'Like' }} {{ mensagem[0].likes.length }}
             </button>
             <span class="comment-count">{{ mensagem[0].comments.length }} comentários</span>
         </div>
@@ -18,16 +18,16 @@
             <ul class="comments-list">
                 <li v-for="comment in mensagem[0].comments" :key="comment.id" class="comment-item">
                     <div class="comment-header">
-                        <strong>{{ comment.name }}</strong> - {{ comment.formattedDateTime }}
+                        <h2><strong>{{ comment.name }}</strong></h2>
                     </div>
                     <div class="comment-content">
                         {{ comment.comment }}
                     </div>
-                    <div class="comment-actions">
+                    <!-- <div class="comment-actions">
                         <button @click="toggleCommentLike(comment)" class="like-button">
                             {{ comment.isLiked ? 'Unlike' : 'Like' }} {{ comment.likeCount }}
                         </button>
-                    </div>
+                    </div> -->
                 </li>
             </ul>
             <div class="add-comment-section">
@@ -47,6 +47,8 @@
 
 <script>
 import { mapActions } from 'vuex';
+import { fireStoreDB } from '@/config/firebase';
+import { doc, updateDoc } from 'firebase/firestore';
 
 export default {
     name: 'PostView',
@@ -74,7 +76,28 @@ export default {
             return formattedDate;
         },
         toggleLike() {
-            this.$store.dispatch('toggleLikeMessage', this.mensagem[0].id);
+            const post = doc(fireStoreDB, 'posts', this.mensagem[0].id)
+
+            // Emit an event to inform that the "like" button was clicked
+            if (this.mensagem[0].likes.includes(this.$route.params.id)) {
+                updateDoc(post, {
+                    ...this.mensagem[0],
+                    likes: this.mensagem[0].likes.filter(id => id != this.$route.params.id)
+                }).catch(error => console.log(error))
+                this.$store.commit('removeLike', {
+                    index: this.$route.params.index,
+                    userID: this.$route.params.id
+                })
+                return
+            }
+            updateDoc(post, {
+                ...this.mensagem[0],
+                likes: [...this.mensagem[0].likes, this.$route.params.id]
+            })
+            this.$store.commit('addLike', {
+                index: this.$route.params.index,
+                userID: this.$route.params.id
+            })
 
         },
         toggleCommentLike(comment) {
@@ -82,6 +105,8 @@ export default {
                 messageId: this.mensagem[0].messageId,
                 commentId: comment.id,
             });
+
+            // colocar pra subir o comentario no firebase
         },
         addComment() {
             if (this.newCommentText.trim() !== '' && this.name.trim() !== '') {
@@ -93,6 +118,7 @@ export default {
                 });
                 // Limpar o texto do novo comentário
                 this.newCommentText = '';
+                this.name = '';
             }
         },
     },
@@ -100,6 +126,10 @@ export default {
 </script>
 
 <style scoped>
+
+h1, h2{
+    margin: 0px 0px 4px 0px;
+}
 .post-detail-container {
     margin-bottom: 20px;
 }

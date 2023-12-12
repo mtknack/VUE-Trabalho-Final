@@ -24,6 +24,9 @@ export default {
         }))
         this.$store.commit('setMessages', posts);
     },
+    upadate(){
+        window.location.reload();
+    },
     computed: {
         ...mapState({
             messageDataList: 'posts.messageDataList',

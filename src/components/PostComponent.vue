@@ -12,7 +12,7 @@
             <button @click="toggleLike" class="like-button">
                 {{ likeTexto }} {{ messageData.likes.length }}
             </button>
-            <button @click="navigateTo(`/post/${messageData.id}`);" class="comment-button">
+            <button @click="navigateTo(`/post/${messageData.id}/${index}`);" class="comment-button">
                 {{ messageData.comments.length }} comentários
             </button>
         </div>
