@@ -1,4 +1,8 @@
-# postex
+# Tema 1 - Postex
+
+## Nome dos integrantes
+Matheus Knack da Silva
+Eduardo de Mello Portilho
 
 ## Project setup
 ```

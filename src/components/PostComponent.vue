@@ -1,5 +1,5 @@
 <template>
-    <div class="message-container">
+    <div class="message-container" :class="{'message-container-like' :messageData.likes.includes(this.userID)}">
         <div class="message-info">
             <p>{{ formatDateTime(messageData.data) }}</p>
             <button v-if="messageData.userID === userID" class="delete-button" @click="deletarPost">Deletar</button>
@@ -10,7 +10,7 @@
         </div>
         <div class="message-interactions">
             <button @click="toggleLike" class="like-button">
-                {{ likeTexto }} {{ messageData.likes.length }}
+                Like {{ messageData.likes.length }}
             </button>
             <button @click="navigateTo(`/post/${messageData.id}/${index}`);" class="comment-button">
                 {{ messageData.comments.length }} comentários
@@ -43,9 +43,6 @@ export default {
         };
     },
     computed: {
-        likeTexto() {
-            return this.messageData.likes.includes(this.userID) ? 'Unlike' : 'Like'
-        },
         ...mapGetters({
             likes: 'getLikes'
         })
@@ -72,16 +69,17 @@ export default {
                     index: this.index,
                     userID: this.userID
                 })
-                return
+            } else {
+                updateDoc(post, {
+                    ...this.messageData,
+                    likes: [...this.messageData.likes, this.userID]
+                })
+                this.$store.commit('addLike', {
+                    index: this.index,
+                    userID: this.userID
+                })
             }
-            updateDoc(post, {
-                ...this.messageData,
-                likes: [...this.messageData.likes, this.userID]
-            })
-            this.$store.commit('addLike', {
-                index: this.index,
-                userID: this.userID
-            })
+
 
         },
         addComment() {
@@ -96,7 +94,7 @@ export default {
         deletarPost() {
             const docRef = doc(fireStoreDB, 'posts', this.$props.messageData.id)
             deleteDoc(docRef)
-            // Documento deletado no firebase, só fazer um remove dele na vuex store agora
+            window.location.reload()
         }
     },
 };
@@ -111,6 +109,11 @@ p {
     border: 1px solid #ccc;
     padding: 10px;
     margin: 10px 0;
+}
+
+.message-container-like {
+    border: 1px solid #3498db;
+    background-color: #3498db28;
 }
 
 .message-info {

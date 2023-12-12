@@ -22,7 +22,7 @@ export default {
             state.messageDataList[index].likes.push(userID)
         },
         removeLike(state, {index, userID}) {
-            state.messageDataList[index].likes.splice(userID, 1)
+            state.messageDataList[index].likes = state.messageDataList[index].likes.filter(id => id != userID)
         }
     },
     actions: {
@@ -31,11 +31,12 @@ export default {
             context.commit('setMessages', messages);
         },
         getMessagesFilter({ state }, id) {
-            return state.messageDataList.filter(mensagem => mensagem.id == id);
+            const teste = state.messageDataList.filter(mensagem => mensagem.id == id);
+            return teste
         },
         addCommentToMessage({ commit }, { messageId, name, comment }) {
             commit('addCommentToMessage', { messageId, name, comment });
-        },
+        }
     },
     getters: {
         getMessages(state) {

@@ -1,22 +1,22 @@
 <template>
-    <div v-if="mensagem.length > 0" class="post-detail-container">
-        <h1>{{ mensagem[0].title }}</h1>
+    <div class="post-detail-container">
+        <h1>{{ mensagem.title }}</h1>
         <div class="post-info">
-            <p>{{ formatDateTime(mensagem[0].formattedDateTime) }}</p>
+            <p>{{ formatDateTime(mensagem.data) }}</p>
         </div>
         <div class="post-content">
-            <p>{{ mensagem[0].message }}</p>
+            <p>{{ mensagem.message }}</p>
         </div>
         <div class="post-interactions">
             <button @click="toggleLike" class="like-button">
-                {{ mensagem[0].isLiked ? 'Unlike' : 'Like' }} {{ mensagem[0].likes.length }}
+                Like {{ mensagem.likes?.length || 0 }}
             </button>
-            <span class="comment-count">{{ mensagem[0].comments.length }} comentários</span>
+            <span class="comment-count">{{ mensagem.comments?.length || 0 }} comentários</span>
         </div>
         <div class="comments-section">
             <h3>Comments</h3>
             <ul class="comments-list">
-                <li v-for="comment in mensagem[0].comments" :key="comment.id" class="comment-item">
+                <li v-for="comment in mensagem.comments" :key="comment.id" class="comment-item">
                     <div class="comment-header">
                         <h2><strong>{{ comment.name }}</strong></h2>
                     </div>
@@ -33,8 +33,6 @@
             <div class="add-comment-section">
                 <h3>Add a Comment</h3>
                 <form @enviar.prevent="commentForm">
-                    <!-- Mano, pode tirar isso aqui? Pq o usuario ja está salvo no localstorage, n precisa se identificar -->
-                    <!-- so se for convidado talvez, n lembro o que o giu falou -->
                     <input type="text" id="username" v-model="name" required placeholder="Digite seu nome">
                     <textarea v-model="newCommentText" placeholder="Escreva seu comentario" required></textarea>
                     <button @click="addComment" class="comment-button">Comment</button>
@@ -65,7 +63,8 @@ export default {
     },
     async mounted() {
         try {
-            this.mensagem = await this.$store.dispatch('getMessagesFilter', this.$route.params.id);
+            const post = await this.$store.dispatch('getMessagesFilter', this.$route.params.id);
+            this.mensagem = post[0]
         } catch (error) {
             console.error('Erro ao obter mensagem:', error);
         }
@@ -76,33 +75,32 @@ export default {
             return formattedDate;
         },
         toggleLike() {
-            const post = doc(fireStoreDB, 'posts', this.mensagem[0].id)
-
+            const post = doc(fireStoreDB, 'posts', this.mensagem.id)
+            const user = localStorage.getItem('userID')
             // Emit an event to inform that the "like" button was clicked
-            if (this.mensagem[0].likes.includes(this.$route.params.id)) {
+            if (this.mensagem.likes.includes(user)) {
                 updateDoc(post, {
-                    ...this.mensagem[0],
-                    likes: this.mensagem[0].likes.filter(id => id != this.$route.params.id)
+                    ...this.mensagem,
+                    likes: this.mensagem.likes.filter(id => id != user)
                 }).catch(error => console.log(error))
                 this.$store.commit('removeLike', {
                     index: this.$route.params.index,
-                    userID: this.$route.params.id
+                    userID: user
                 })
-                return
+            } else {
+                updateDoc(post, {
+                    ...this.mensagem,
+                    likes: [...this.mensagem.likes, user]
+                }).catch(error => console.log(error))
+                this.$store.commit('addLike', {
+                    index: this.$route.params.index,
+                    userID: user
+                })
             }
-            updateDoc(post, {
-                ...this.mensagem[0],
-                likes: [...this.mensagem[0].likes, this.$route.params.id]
-            })
-            this.$store.commit('addLike', {
-                index: this.$route.params.index,
-                userID: this.$route.params.id
-            })
-
         },
         toggleCommentLike(comment) {
             this.$store.dispatch('toggleLikeComment', {
-                messageId: this.mensagem[0].messageId,
+                messageId: this.mensagem.messageId,
                 commentId: comment.id,
             });
 
@@ -110,12 +108,17 @@ export default {
         },
         addComment() {
             if (this.newCommentText.trim() !== '' && this.name.trim() !== '') {
-                
-                this.$store.dispatch('addCommentToMessage', {
-                    messageId: this.mensagem[0].id,
+                const newComment = {
+                    messageId: this.mensagem.id,
                     name: this.name,
-                    comment: this.newCommentText,
-                });
+                    comment: this.newCommentText
+                }
+                const post = doc(fireStoreDB, 'posts', this.mensagem.id)
+                updateDoc(post, {
+                    ...this.mensagem,
+                    comments: [...this.comments, newComment]
+                }).catch(error => console.log(error))
+                this.$store.dispatch('addCommentToMessage', newComment);
                 // Limpar o texto do novo comentário
                 this.newCommentText = '';
                 this.name = '';
@@ -126,10 +129,11 @@ export default {
 </script>
 
 <style scoped>
-
-h1, h2{
+h1,
+h2 {
     margin: 0px 0px 4px 0px;
 }
+
 .post-detail-container {
     margin-bottom: 20px;
 }
